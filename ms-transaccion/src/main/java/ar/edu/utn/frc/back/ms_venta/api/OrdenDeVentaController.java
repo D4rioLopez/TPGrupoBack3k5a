@@ -1,10 +1,12 @@
 package ar.edu.utn.frc.back.ms_venta.api;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
+@AllArgsConstructor
+@RequestMapping("/api/ordenes-de-venta")
 public class OrdenDeVentaController {
     @PostMapping
     public ResponseEntity<?> crearOrdenDeVenta() {

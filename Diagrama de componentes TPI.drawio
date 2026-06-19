@@ -41,7 +41,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="t5RzHWFbprFjvYMh8wAX-8" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Servicio Usuario" vertex="1">
+        <mxCell id="t5RzHWFbprFjvYMh8wAX-8" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF,#CC0000);" value="Servicio Usuario" vertex="1">
           <mxGeometry height="190" width="330" x="442.5" y="300" as="geometry" />
         </mxCell>
         <mxCell id="xezKzDoKeNU_rotSJAje-18" edge="1" parent="1" source="t5RzHWFbprFjvYMh8wAX-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;dashed=1;endArrow=open;endFill=0;" target="t5RzHWFbprFjvYMh8wAX-49">
@@ -141,7 +141,7 @@
         <mxCell id="xezKzDoKeNU_rotSJAje-17" edge="1" parent="1" source="xezKzDoKeNU_rotSJAje-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;dashed=1;endArrow=open;endFill=0;" target="t5RzHWFbprFjvYMh8wAX-49">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="xezKzDoKeNU_rotSJAje-16" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="Rol" vertex="1">
+        <mxCell id="xezKzDoKeNU_rotSJAje-16" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=light-dark(transparent,#000000);" value="Rol" vertex="1">
           <mxGeometry height="50" width="120" x="637.5" y="340" as="geometry" />
         </mxCell>
         <mxCell id="xezKzDoKeNU_rotSJAje-21" parent="1" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" value="PersistenciaPortfolio" vertex="1">

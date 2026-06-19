@@ -1,25 +1,26 @@
 package ar.edu.utn.frc.back.ms_venta.api;
 
+import ar.edu.utn.frc.back.ms_venta.model.Transaccion;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/ordenes-de-compra")
-public class OrdenDeCompraController {
+@RequestMapping("/api/transacciones")
+public class TransaccionController {
     @PostMapping
-    public ResponseEntity<?> crearOrdenDeCompra() {
+    public ResponseEntity<?> crearTransaccion(@RequestBody Transaccion transaccion) {
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> modificarOrdenDeCompra() {
+    public ResponseEntity<?> modificarTransaccion(@RequestBody Transaccion transaccion) {
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarOrdenDeCompra() {
+    public ResponseEntity<?> eliminarTransaccion() {
         return ResponseEntity.ok().build();
     }
 }
