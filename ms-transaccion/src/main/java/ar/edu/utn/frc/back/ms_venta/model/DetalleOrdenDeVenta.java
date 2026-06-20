@@ -21,6 +21,8 @@ public class DetalleOrdenDeVenta {
 
     private Integer cantidadDisponible;
 
+    private Double precioUnitario;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDEN_VENTA_ID", nullable = false)
     private OrdenDeVenta ordenDeVenta;

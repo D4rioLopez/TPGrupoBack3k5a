@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TransaccionRequest {
-    private Long CompradorId;
-    private Long VendedorId;
+    private Long compradorId;
+    private Long vendedorId;
     private Integer cantidad;
 }

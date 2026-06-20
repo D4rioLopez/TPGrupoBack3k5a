@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Getter
 public class TransaccionResponse {
     private Long id;
-    private Long CompradorId;
-    private Long VendedorId;
+    private Long compradorId;
+    private Long vendedorId;
     private Integer cantidad;
     private Double precio;
     private LocalDateTime fecha;
