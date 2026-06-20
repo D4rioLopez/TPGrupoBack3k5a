@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres-app:
+    image: postgres:16
+    container_name: postgres-app
+    environment:
+      POSTGRES_DB: admin
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_app_data:/var/lib/postgresql/data
+
+
+  postgres-keycloak:
+    image: postgres:16
+    container_name: postgres-keycloak
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak123
+    ports:
+      #no hace falta si no lo voy a consultar solo desde afuera, pero lo dejo por si acaso
+      - "5432:5432"
+    volumes:
+      - postgres_keycloak_data:/var/lib/postgresql/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.2
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres-keycloak
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak123
+
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin123
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      - postgres-keycloak
+
+  ms-transaccion:
+    build:
+      context: ./ms-transaccion
+      dockerfile: Dockerfile
+    container_name: ms-transaccion
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-app:5432/admin
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres-app
+
+volumes:
+    postgres_app_data:
+    postgres_keycloak_data:
