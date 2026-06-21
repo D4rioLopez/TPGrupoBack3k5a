@@ -60,6 +60,21 @@ services:
       - "8081:8081"
     depends_on:
       - postgres-app
+      - ms-portfolio
+      
+  ms-portfolio:
+    build:
+      context: ./ms-portfolio
+      dockerfile: Dockerfile
+    container_name: ms-portfolio
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-app:5432/admin
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+    ports:
+      - "8082:8082"
+    depends_on:
+      - postgres-app
 
 volumes:
     postgres_app_data:
