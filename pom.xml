@@ -8,6 +8,7 @@
     <modules>
         <module>ms-transaccion</module>
         <module>ms-portfolio</module>
+        <module>gateway</module>
         <!-- acá vas agregando ms-usuario, ms-cotizacion, etc -->
     </modules>
 </project>

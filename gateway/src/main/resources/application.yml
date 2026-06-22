@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: ms-transaccion
+          uri: http://ms-transaccion:8081
+          predicates:
+            - Path=/api/ordenes-de-compra/**, /api/ordenes-de-venta/**, /api/transacciones/**
+        - id: ms-portfolio
+          uri: http://ms-portfolio:8082
+          predicates:
+            - Path=/portfolios/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info,gateway"  # O directamente: "*"
+  endpoint:
+    gateway:
+      access: READ_ONLY
