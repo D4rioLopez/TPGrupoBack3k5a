@@ -23,6 +23,7 @@ services:
     depends_on:
       - ms-transaccion
       - ms-portfolio
+      - ms-cotizacion
 
 
   postgres-keycloak:
@@ -86,6 +87,14 @@ services:
       - "8082:8082"
     depends_on:
       - postgres-app
+
+  ms-cotizacion:
+    build:
+      context: ./ms-cotizacion
+      dockerfile: Dockerfile
+    container_name: ms-cotizacion
+    ports:
+      - "8083:8083"
 
 volumes:
     postgres_app_data:
