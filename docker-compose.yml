@@ -18,6 +18,21 @@ services:
       timeout: 5s
       retries: 5
 
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "9000:8080"
+    depends_on:
+      ms-transaccion:
+        condition: service_started
+      ms-portfolio:
+        condition: service_started
+      ms-cotizacion:
+        condition: service_started
+
 
   postgres-keycloak:
     image: postgres:16
@@ -72,6 +87,31 @@ services:
     depends_on:
       postgres-app:
         condition: service_healthy
+      ms-portfolio:
+        condition: service_started
+
+  ms-portfolio:
+    build:
+      context: ./ms-portfolio
+      dockerfile: Dockerfile
+    container_name: ms-portfolio
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-app:5432/admin
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: admin123
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres-app:
+        condition: service_healthy
+
+  ms-cotizacion:
+    build:
+      context: ./ms-cotizacion
+      dockerfile: Dockerfile
+    container_name: ms-cotizacion
+    ports:
+      - "8083:8083"
 
 volumes:
     postgres_app_data:
