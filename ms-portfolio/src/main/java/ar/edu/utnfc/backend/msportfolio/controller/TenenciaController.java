@@ -2,6 +2,8 @@ package ar.edu.utnfc.backend.msportfolio.controller;
 
 import ar.edu.utnfc.backend.msportfolio.model.Portfolio;
 import ar.edu.utnfc.backend.msportfolio.model.Tenencia;
+import ar.edu.utnfc.backend.msportfolio.model.dto.TenenciaRequest;
+import ar.edu.utnfc.backend.msportfolio.model.dto.TenenciaResponse;
 import ar.edu.utnfc.backend.msportfolio.service.PortfolioService;
 import ar.edu.utnfc.backend.msportfolio.service.TenenciaService;
 import org.springframework.web.bind.annotation.*;
@@ -12,34 +14,43 @@ import java.util.List;
 @RequestMapping("/tenencias")
 public class TenenciaController {
     private final TenenciaService tenenciaService;
+    private final PortfolioService portfolioService;
 
-    public TenenciaController(TenenciaService tenenciaService){
+    public TenenciaController(TenenciaService tenenciaService, PortfolioService portfolioService){
         this.tenenciaService = tenenciaService;
+        this.portfolioService = portfolioService;
+    }
 
-    }
     @GetMapping
-    public List<Tenencia> obtenerTodas(){
-        return tenenciaService.obtenerTodas();
+    public List<TenenciaResponse> obtenerTodas(){
+        return tenenciaService.obtenerTodas().stream()
+                .map(this::toResponse)
+                .toList();
     }
+
     @GetMapping("/{id}")
-    public Tenencia obterPorId(@PathVariable Long id){
-        return tenenciaService.obtenerPorId(id);
+    public TenenciaResponse obterPorId(@PathVariable Long id){
+        return toResponse(tenenciaService.obtenerPorId(id));
     }
 
     @GetMapping("/usuario/{keycloakId}")
-    public List<Tenencia> obterPorKeycloakId(@PathVariable String keycloakId){
-        return tenenciaService.obtenerPorKeycloakId(keycloakId);
+    public List<TenenciaResponse> obterPorKeycloakId(@PathVariable String keycloakId){
+        return tenenciaService.obtenerPorKeycloakId(keycloakId).stream()
+                .map(this::toResponse)
+                .toList();
     }
-
 
     @PostMapping
-    public Tenencia guardar(@RequestBody Tenencia tenencia){
-        return tenenciaService.guardar(tenencia);
+    public TenenciaResponse guardar(@RequestBody TenenciaRequest request){
+        Tenencia tenencia = toEntity(request);
+        return toResponse(tenenciaService.guardar(tenencia));
     }
+
     @PutMapping("/{id}")
-    public Tenencia actualizar(@PathVariable Long id,
-                               @RequestBody Tenencia tenencia){
-        return tenenciaService.actualizar(id,tenencia);
+    public TenenciaResponse actualizar(@PathVariable Long id,
+                               @RequestBody TenenciaRequest request){
+        Tenencia tenencia = toEntity(request);
+        return toResponse(tenenciaService.actualizar(id, tenencia));
     }
 
     @DeleteMapping("/{id}")
@@ -48,10 +59,10 @@ public class TenenciaController {
     }
 
     @PostMapping("/usuario/{keycloakId}/actualizar-tenencia")
-    public Tenencia actualizarTenencia(@PathVariable String keycloakId,
+    public TenenciaResponse actualizarTenencia(@PathVariable String keycloakId,
                                         @RequestParam String ticker,
                                         @RequestParam Double cantidadDelta) {
-        return tenenciaService.actualizarTenencia(keycloakId, ticker, cantidadDelta);
+        return toResponse(tenenciaService.actualizarTenencia(keycloakId, ticker, cantidadDelta));
     }
 
     @GetMapping("/usuario/{keycloakId}/validar")
@@ -67,5 +78,28 @@ public class TenenciaController {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private TenenciaResponse toResponse(Tenencia tenencia) {
+        if (tenencia == null) return null;
+        return TenenciaResponse.builder()
+                .id(tenencia.getId())
+                .ticker(tenencia.getTicker())
+                .cantidad(tenencia.getCantidad())
+                .portfolioId(tenencia.getPortfolio() != null ? tenencia.getPortfolio().getId() : null)
+                .build();
+    }
+
+    private Tenencia toEntity(TenenciaRequest request) {
+        if (request == null) return null;
+        Portfolio portfolio = null;
+        if (request.getPortfolioId() != null) {
+            portfolio = portfolioService.obtenerPorId(request.getPortfolioId());
+        }
+        return Tenencia.builder()
+                .ticker(request.getTicker())
+                .cantidad(request.getCantidad())
+                .portfolio(portfolio)
+                .build();
     }
 }

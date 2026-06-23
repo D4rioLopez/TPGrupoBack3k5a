@@ -1,6 +1,9 @@
 package ar.edu.utnfc.backend.msportfolio.controller;
 
 import ar.edu.utnfc.backend.msportfolio.model.Portfolio;
+import ar.edu.utnfc.backend.msportfolio.model.dto.PortfolioRequest;
+import ar.edu.utnfc.backend.msportfolio.model.dto.PortfolioResponse;
+import ar.edu.utnfc.backend.msportfolio.model.dto.TenenciaResponse;
 import ar.edu.utnfc.backend.msportfolio.service.PortfolioService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,31 +20,34 @@ public class PortfolioController {
     }
 
     @GetMapping
-    public List<Portfolio> obtenerTodos() {
-        return portfolioService.obtenerTodos();
+    public List<PortfolioResponse> obtenerTodos() {
+        return portfolioService.obtenerTodos().stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public Portfolio obtenerPorId(@PathVariable Long id) {
-        return portfolioService.obtenerPorId(id);
+    public PortfolioResponse obtenerPorId(@PathVariable Long id) {
+        return toResponse(portfolioService.obtenerPorId(id));
     }
 
     @GetMapping("/usuario/{keycloakId}")
-    public Portfolio obterPorKeycloakId(@PathVariable String keycloakId){
-        return portfolioService.obtenerPorKeycloakId(keycloakId);
+    public PortfolioResponse obterPorKeycloakId(@PathVariable String keycloakId){
+        return toResponse(portfolioService.obtenerPorKeycloakId(keycloakId));
     }
 
     @PostMapping
-    public Portfolio guardar(@RequestBody Portfolio portfolio) {
-        return portfolioService.guardar(portfolio);
+    public PortfolioResponse guardar(@RequestBody PortfolioRequest request) {
+        Portfolio portfolio = toEntity(request);
+        return toResponse(portfolioService.guardar(portfolio));
     }
 
     @PutMapping("/{id}")
-    public Portfolio actualizar(
+    public PortfolioResponse actualizar(
             @PathVariable Long id,
-            @RequestBody Portfolio portfolio) {
-
-        return portfolioService.actualizar(id, portfolio);
+            @RequestBody PortfolioRequest request) {
+        Portfolio portfolio = toEntity(request);
+        return toResponse(portfolioService.actualizar(id, portfolio));
     }
 
     @DeleteMapping("/{id}")
@@ -50,13 +56,13 @@ public class PortfolioController {
     }
 
     @PostMapping("/usuario/{keycloakId}/cargar-saldo")
-    public Portfolio cargarSaldo(@PathVariable String keycloakId, @RequestParam Double monto) {
-        return portfolioService.ingresarSaldo(keycloakId, monto);
+    public PortfolioResponse cargarSaldo(@PathVariable String keycloakId, @RequestParam Double monto) {
+        return toResponse(portfolioService.ingresarSaldo(keycloakId, monto));
     }
 
     @PutMapping("/usuario/{keycloakId}/actualizar-saldo")
-    public Portfolio actualizarSaldo(@PathVariable String keycloakId, @RequestParam Double montoDelta) {
-        return portfolioService.actualizarSaldo(keycloakId, montoDelta);
+    public PortfolioResponse actualizarSaldo(@PathVariable String keycloakId, @RequestParam Double montoDelta) {
+        return toResponse(portfolioService.actualizarSaldo(keycloakId, montoDelta));
     }
 
     @GetMapping("/usuario/{keycloakId}/validar-saldo")
@@ -67,5 +73,36 @@ public class PortfolioController {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private PortfolioResponse toResponse(Portfolio portfolio) {
+        if (portfolio == null) return null;
+        List<TenenciaResponse> tenenciasResponse = null;
+        if (portfolio.getTenencias() != null) {
+            tenenciasResponse = portfolio.getTenencias().stream()
+                    .map(t -> TenenciaResponse.builder()
+                            .id(t.getId())
+                            .ticker(t.getTicker())
+                            .cantidad(t.getCantidad())
+                            .portfolioId(portfolio.getId())
+                            .build())
+                    .toList();
+        }
+        return PortfolioResponse.builder()
+                .id(portfolio.getId())
+                .keycloakId(portfolio.getKeycloakId())
+                .nombre(portfolio.getNombre())
+                .saldo(portfolio.getSaldo())
+                .tenencias(tenenciasResponse)
+                .build();
+    }
+
+    private Portfolio toEntity(PortfolioRequest request) {
+        if (request == null) return null;
+        return Portfolio.builder()
+                .keycloakId(request.getKeycloakId())
+                .nombre(request.getNombre())
+                .saldo(request.getSaldo() != null ? request.getSaldo() : 0.0)
+                .build();
     }
 }

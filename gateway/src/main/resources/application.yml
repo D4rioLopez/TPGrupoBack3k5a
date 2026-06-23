@@ -14,7 +14,7 @@ spring:
         - id: ms-portfolio
           uri: http://ms-portfolio:8082
           predicates:
-            - Path=/portfolios/**
+            - Path=/portfolios/**, /tenencias/**
         - id: ms-cotizacion
           uri: http://ms-cotizacion:8083
           predicates:
