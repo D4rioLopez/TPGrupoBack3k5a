@@ -15,8 +15,8 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     //resuelvo RF 6
     @Query(
             "select t from Transaccion t " +
-                    "where t.ordenDeVenta.usuario.id = :usuarioId or " +
-                    "t.ordenDeCompra.usuario.id = :usuarioId " +
+                    "where t.detalleOrdenDeVenta.ordenDeVenta.usuarioId = :usuarioId or " +
+                    "t.ordenDeCompra.usuarioId = :usuarioId " +
                     "order by t.fecha desc"
     )
     List<Transaccion> findHistorialByUsuarioId(@Param("usuarioId") Long usuarioId);

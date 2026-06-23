@@ -24,6 +24,7 @@ public class OrdenDeCompraController {
     @PostMapping
     public ResponseEntity<OrdenDeCompraResponse> crearOrdenDeCompra(@RequestBody OrdenDeCompraRequest request) {
         OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
+        ordenDeCompra.setUsuarioId(request.getUsuarioId());
         ordenDeCompra.setSimboloAccion(request.getSimboloAccion());
         ordenDeCompra.setCantidad(request.getCantidad());
         ordenDeCompra.setPrecioMaximo(request.getPrecioMaximo());
@@ -37,6 +38,7 @@ public class OrdenDeCompraController {
     private OrdenDeCompraResponse mapToResponse(OrdenDeCompra oc) {
         return OrdenDeCompraResponse.builder()
                 .id(oc.getId())
+                .usuarioId(oc.getUsuarioId())
                 .simboloAccion(oc.getSimboloAccion())
                 .cantidad(oc.getCantidad())
                 .precioMaximo(oc.getPrecioMaximo())

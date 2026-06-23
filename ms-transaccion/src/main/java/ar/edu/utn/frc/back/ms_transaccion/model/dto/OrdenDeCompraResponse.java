@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class OrdenDeCompraResponse {
     private Long id;
+    private Long usuarioId;
     private String simboloAccion;
     private Long cantidad;
     private Double precioMaximo;

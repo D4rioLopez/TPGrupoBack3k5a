@@ -15,7 +15,6 @@ import java.util.List;
 public class OrdenDeVentaService {
     @Autowired
     private OrdenDeVentaRepository ordenDeVentaRepository;
-    @Autowired
 
     //RF4 registrar ov
     public OrdenDeVenta crearOrdenDeVenta(OrdenDeVenta ordenDeVenta) {

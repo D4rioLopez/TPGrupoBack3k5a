@@ -6,6 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class OrdenDeCompraRequest {
+    private Long usuarioId;
     private String simboloAccion;
     private Long cantidad;
     private Double precioMaximo;
