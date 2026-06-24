@@ -2,6 +2,11 @@ spring:
   application:
     name: ms-venta
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/{nombre-de-tu-realm}
 
   datasource:
     url: jdbc:postgresql://localhost:5432/transaccion
