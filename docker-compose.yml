@@ -12,6 +12,26 @@ services:
       - "5433:5432"
     volumes:
       - postgres_app_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "9000:8080"
+    depends_on:
+      ms-transaccion:
+        condition: service_started
+      ms-portfolio:
+        condition: service_started
+      ms-cotizacion:
+        condition: service_started
 
 
   postgres-keycloak:
@@ -26,6 +46,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_keycloak_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.2
@@ -45,7 +70,8 @@ services:
       - "8080:8080"
 
     depends_on:
-      - postgres-keycloak
+      postgres-keycloak:
+        condition: service_healthy
 
   ms-transaccion:
     build:
@@ -59,9 +85,11 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - postgres-app
-      - ms-portfolio
-      
+      postgres-app:
+        condition: service_healthy
+      ms-portfolio:
+        condition: service_started
+
   ms-portfolio:
     build:
       context: ./ms-portfolio
@@ -74,7 +102,16 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - postgres-app
+      postgres-app:
+        condition: service_healthy
+
+  ms-cotizacion:
+    build:
+      context: ./ms-cotizacion
+      dockerfile: Dockerfile
+    container_name: ms-cotizacion
+    ports:
+      - "8083:8083"
 
 volumes:
     postgres_app_data:
