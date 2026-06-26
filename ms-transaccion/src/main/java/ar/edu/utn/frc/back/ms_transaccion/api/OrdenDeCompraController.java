@@ -42,6 +42,7 @@ public class OrdenDeCompraController {
     private OrdenDeCompraResponse mapToResponse(OrdenDeCompra oc) {
         return OrdenDeCompraResponse.builder()
                 .id(oc.getId())
+                .keycloakId(oc.getKeycloakId())
                 .simboloAccion(oc.getSimboloAccion())
                 .cantidad(oc.getCantidad())
                 .precioMaximo(oc.getPrecioMaximo())

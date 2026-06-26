@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class OrdenDeCompraResponse {
     private Long id;
-    private Long usuarioId;
+    private String keycloakId;
     private String simboloAccion;
     private Long cantidad;
     private Double precioMaximo;
