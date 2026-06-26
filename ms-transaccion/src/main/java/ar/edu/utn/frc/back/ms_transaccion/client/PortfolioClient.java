@@ -6,6 +6,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
+import ar.edu.utn.frc.back.ms_transaccion.exception.ServiceUnavailableException;
+import org.springframework.web.client.RestClientException;
+
 @Component
 public class PortfolioClient {
     private RestTemplate restTemplate;
@@ -22,7 +25,11 @@ public class PortfolioClient {
                 .fromUriString(portfolioUrl + "/api/portfolios/usuario/{id}/validar-saldo")
                 .queryParam("monto", monto)
                 .buildAndExpand(keycloakId).toUriString();
-        return restTemplate.getForObject(url, Boolean.class);
+        try {
+            return restTemplate.getForObject(url, Boolean.class);
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException("El microservicio ms-portfolio no está disponible o respondió con un error de red");
+        }
     }
 
     public Boolean validarTenencia(String keycloakId, String simboloAccion, Long cantidad) {
@@ -31,7 +38,11 @@ public class PortfolioClient {
                 .queryParam("simboloAccion", simboloAccion)
                 .queryParam("cantidad", cantidad)
                 .buildAndExpand(keycloakId).toUriString();
-        return restTemplate.getForObject(url, Boolean.class);
+        try {
+            return restTemplate.getForObject(url, Boolean.class);
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException("El microservicio ms-portfolio no está disponible o respondió con un error de red");
+        }
     }
 
     public void actualizarSaldo(String keycloakId, Double monto) {
@@ -39,7 +50,11 @@ public class PortfolioClient {
                 .fromUriString(portfolioUrl + "/api/portfolios/usuario/{id}/actualizar-saldo")
                 .queryParam("monto", monto)
                 .buildAndExpand(keycloakId).toUriString();
-        restTemplate.put(url, null);
+        try {
+            restTemplate.put(url, null);
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException("El microservicio ms-portfolio no está disponible o respondió con un error de red");
+        }
     }
 
     public void actualizarTenencia(String keycloakId, String simboloAccion, Double cantidad) {
@@ -48,6 +63,10 @@ public class PortfolioClient {
                 .queryParam("simboloAccion", simboloAccion)
                 .queryParam("cantidad", cantidad)
                 .buildAndExpand(keycloakId).toUriString();
-        restTemplate.postForObject(url, null, Object.class);
+        try {
+            restTemplate.postForObject(url, null, Object.class);
+        } catch (RestClientException e) {
+            throw new ServiceUnavailableException("El microservicio ms-portfolio no está disponible o respondió con un error de red");
+        }
     } 
 }
