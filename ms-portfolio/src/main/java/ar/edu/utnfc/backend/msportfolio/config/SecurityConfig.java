@@ -22,10 +22,10 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/portfolios/usuario/*/validar-saldo",
-                                "/portfolios/usuario/*/actualizar-saldo",
-                                "/tenencias/usuario/*/validar",
-                                "/tenencias/usuario/*/actualizar-tenencia"
+                                "/api/portfolios/usuario/*/validar-saldo",
+                                "/api/portfolios/usuario/*/actualizar-saldo",
+                                "/api/tenencias/usuario/*/validar",
+                                "/api/tenencias/usuario/*/actualizar-tenencia"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
