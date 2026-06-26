@@ -1,5 +1,6 @@
 package ar.edu.utn.frc.back.ms_transaccion.api;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,19 +33,19 @@ public class OrdenDeVentaController {
             @RequestParam(required = false) EstadoOrdenVenta estado,
             @AuthenticationPrincipal Jwt jwt) {
         
-        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-        boolean isAdmin = false;
-        if (realmAccess != null && realmAccess.containsKey("roles")) {
-            List<String> roles = (List<String>) realmAccess.get("roles");
-            isAdmin = roles.contains("admin");
-        }
+        List<OrdenDeVenta> ordenes = ordenDeVentaService.listarOrdenesDeVenta(jwt.getSubject(), estado);
 
-        List<OrdenDeVenta> ordenes;
-        if (isAdmin) {
-            ordenes = ordenDeVentaService.listarOrdenesDeVenta(null, estado);
-        } else {
-            ordenes = ordenDeVentaService.listarOrdenesDeVenta(jwt.getSubject(), estado);
-        }
+        List<OrdenDeVentaResponse> response = ordenes.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<OrdenDeVentaResponse>> obtenerTodasLasOrdenesDeVenta(
+            @RequestParam(required = false) EstadoOrdenVenta estado) {
+        
+        List<OrdenDeVenta> ordenes = ordenDeVentaService.listarOrdenesDeVenta(null, estado);
 
         List<OrdenDeVentaResponse> response = ordenes.stream()
                 .map(this::mapToResponse)
@@ -55,7 +56,7 @@ public class OrdenDeVentaController {
     //RF4 registrar ov
     @PostMapping
     public ResponseEntity<OrdenDeVentaResponse> crearOrdenDeVenta(
-            @RequestBody OrdenDeVentaRequest request,
+            @Valid @RequestBody OrdenDeVentaRequest request,
             @AuthenticationPrincipal Jwt jwt) {
         OrdenDeVenta ordenDeVenta = new OrdenDeVenta();
         ordenDeVenta.setKeycloakId(jwt.getSubject());

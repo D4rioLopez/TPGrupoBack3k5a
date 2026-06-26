@@ -23,6 +23,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/transacciones").hasRole("admin")
+                        .requestMatchers(HttpMethod.GET, "/api/ordenes-de-compra/admin").hasRole("admin")
+                        .requestMatchers(HttpMethod.GET, "/api/ordenes-de-venta/admin").hasRole("admin")
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
