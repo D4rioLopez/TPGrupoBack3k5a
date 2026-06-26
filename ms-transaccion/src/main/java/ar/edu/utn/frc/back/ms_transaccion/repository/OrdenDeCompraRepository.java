@@ -3,6 +3,7 @@ package ar.edu.utn.frc.back.ms_transaccion.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import ar.edu.utn.frc.back.ms_transaccion.model.EstadoOrdenCompra;
 import ar.edu.utn.frc.back.ms_transaccion.model.OrdenDeCompra;
 
 import java.util.List;
@@ -11,4 +12,7 @@ import java.util.List;
 public interface OrdenDeCompraRepository extends JpaRepository<OrdenDeCompra, Long> {
     List<OrdenDeCompra> findByKeycloakIdOrderByFechaDesc(String keycloakId);
     //aca resuelvo parte de RF 5, busco la operacion (OC) con su fecha en descendente.
+
+    List<OrdenDeCompra> findByEstado(EstadoOrdenCompra estado);
+    List<OrdenDeCompra> findByKeycloakIdAndEstado(String keycloakId, EstadoOrdenCompra estado);
 }

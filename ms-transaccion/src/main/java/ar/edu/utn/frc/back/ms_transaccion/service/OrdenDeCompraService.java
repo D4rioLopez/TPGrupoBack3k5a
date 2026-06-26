@@ -96,4 +96,16 @@ public class OrdenDeCompraService {
 
         return oc;
     }
+
+    public List<OrdenDeCompra> listarOrdenesDeCompra(String keycloakId, EstadoOrdenCompra estado) {
+        if (keycloakId != null && estado != null) {
+            return ordenDeCompraRepository.findByKeycloakIdAndEstado(keycloakId, estado);
+        } else if (keycloakId != null) {
+            return ordenDeCompraRepository.findByKeycloakIdOrderByFechaDesc(keycloakId);
+        } else if (estado != null) {
+            return ordenDeCompraRepository.findByEstado(estado);
+        } else {
+            return ordenDeCompraRepository.findAll();
+        }
+    }
 }
