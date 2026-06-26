@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrdenDeCompraRepository extends JpaRepository<OrdenDeCompra, Long> {
-    List<OrdenDeCompra> findByUsuarioIdOrderByFechaDesc(Long usuarioId);
+    List<OrdenDeCompra> findByKeycloakIdOrderByFechaDesc(String keycloakId);
     //aca resuelvo parte de RF 5, busco la operacion (OC) con su fecha en descendente.
 }

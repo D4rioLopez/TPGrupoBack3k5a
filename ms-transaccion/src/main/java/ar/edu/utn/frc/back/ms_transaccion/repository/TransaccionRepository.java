@@ -15,10 +15,10 @@ public interface TransaccionRepository extends JpaRepository<Transaccion, Long> 
     //resuelvo RF 6
     @Query(
             "select t from Transaccion t " +
-                    "where t.ordenDeVenta.usuario.id = :usuarioId or " +
-                    "t.ordenDeCompra.usuario.id = :usuarioId " +
+                    "where t.detalleOrdenDeVenta.ordenDeVenta.keycloakId = :keycloakId or " +
+                    "t.ordenDeCompra.keycloakId = :keycloakId " +
                     "order by t.fecha desc"
     )
-    List<Transaccion> findHistorialByUsuarioId(@Param("usuarioId") Long usuarioId);
+    List<Transaccion> findHistorialBykeycloakId(@Param("keycloakId") String keycloakId);
     //resuelvo parte de RF 5, busco la operacion Transaccion con su fecha ne descendente.
 }

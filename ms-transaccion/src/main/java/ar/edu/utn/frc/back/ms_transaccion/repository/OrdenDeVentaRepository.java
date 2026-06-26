@@ -9,6 +9,6 @@ import ar.edu.utn.frc.back.ms_transaccion.model.OrdenDeVenta;
 
 @Repository
 public interface OrdenDeVentaRepository extends JpaRepository<OrdenDeVenta, Long> {
-    List<OrdenDeVenta> findByUsuarioIdOrderByFechaDesc(Long usuarioId);
+    List<OrdenDeVenta> findByKeycloakIdOrderByFechaDesc(String keycloakId);
     //aca resuelvo parte de RF 5, busco la operacion (OV) con su fecha en descendente.
 }

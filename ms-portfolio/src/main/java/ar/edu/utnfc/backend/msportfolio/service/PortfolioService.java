@@ -1,8 +1,11 @@
 package ar.edu.utnfc.backend.msportfolio.service;
 
+import ar.edu.utnfc.backend.msportfolio.client.CotizacionClient;
 import ar.edu.utnfc.backend.msportfolio.model.Portfolio;
 import ar.edu.utnfc.backend.msportfolio.repository.PortfolioRepository;
 
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,7 +13,10 @@ import java.util.List;
 @Service
 public class PortfolioService {
 
-    private final PortfolioRepository portfolioRepository;
+    @Autowired
+    private PortfolioRepository portfolioRepository;
+    @Autowired
+    private CotizacionClient cotizacionClient;
 
     public PortfolioService(PortfolioRepository portfolioRepository) {
         this.portfolioRepository = portfolioRepository;
@@ -62,16 +68,24 @@ public class PortfolioService {
         return portfolioRepository.save(portfolio);
     }
 
-    public Portfolio actualizarSaldo(String keycloakId, Double montoDelta) {
-        if (montoDelta == null) {
-            throw new IllegalArgumentException("El monto delta no puede ser nulo");
+    public Portfolio actualizarSaldo(String keycloakId, Double monto) {
+        if (monto == null) {
+            throw new IllegalArgumentException("El monto no puede ser nulo");
         }
         Portfolio portfolio = obtenerPorKeycloakId(keycloakId);
-        double nuevoSaldo = portfolio.getSaldo() + montoDelta;
+        double nuevoSaldo = portfolio.getSaldo() + monto;
         if (nuevoSaldo < 0) {
             throw new RuntimeException("Saldo insuficiente en el portfolio");
         }
         portfolio.setSaldo(nuevoSaldo);
         return portfolioRepository.save(portfolio);
+    }
+
+    public Double calcularValorTotal(String keycloakId) {
+        Portfolio portfolio = obtenerPorKeycloakId(keycloakId);
+        double valorTenencias = portfolio.getTenencias().stream()
+                .mapToDouble(t -> t.getCantidad() * cotizacionClient.obtenerPrecioARS(t.getSimboloAccion()))
+                .sum();
+        return portfolio.getSaldo() + valorTenencias;
     }
 }

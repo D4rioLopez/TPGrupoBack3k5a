@@ -5,6 +5,7 @@ import ar.edu.utnfc.backend.msportfolio.model.dto.PortfolioRequest;
 import ar.edu.utnfc.backend.msportfolio.model.dto.PortfolioResponse;
 import ar.edu.utnfc.backend.msportfolio.model.dto.TenenciaResponse;
 import ar.edu.utnfc.backend.msportfolio.service.PortfolioService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,8 +62,8 @@ public class PortfolioController {
     }
 
     @PutMapping("/usuario/{keycloakId}/actualizar-saldo")
-    public PortfolioResponse actualizarSaldo(@PathVariable String keycloakId, @RequestParam Double montoDelta) {
-        return toResponse(portfolioService.actualizarSaldo(keycloakId, montoDelta));
+    public PortfolioResponse actualizarSaldo(@PathVariable String keycloakId, @RequestParam Double monto) {
+        return toResponse(portfolioService.actualizarSaldo(keycloakId, monto));
     }
 
     @GetMapping("/usuario/{keycloakId}/validar-saldo")
@@ -75,6 +76,11 @@ public class PortfolioController {
         }
     }
 
+    @GetMapping("/usuario/{keycloakId}/valor-total")
+    public ResponseEntity<Double> valorTotal(@PathVariable String keycloakId) {
+        return ResponseEntity.ok(portfolioService.calcularValorTotal(keycloakId));
+    }
+
     private PortfolioResponse toResponse(Portfolio portfolio) {
         if (portfolio == null) return null;
         List<TenenciaResponse> tenenciasResponse = null;
@@ -82,7 +88,7 @@ public class PortfolioController {
             tenenciasResponse = portfolio.getTenencias().stream()
                     .map(t -> TenenciaResponse.builder()
                             .id(t.getId())
-                            .ticker(t.getTicker())
+                            .simboloAccion(t.getSimboloAccion())
                             .cantidad(t.getCantidad())
                             .portfolioId(portfolio.getId())
                             .build())

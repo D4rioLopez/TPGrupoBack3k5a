@@ -15,7 +15,17 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/tpi-backend
+
+portfolio:
+  service:
+    url: ${PORTFOLIO_SERVICE_URL:http://localhost:8082}
 
 server:
   port: 8081

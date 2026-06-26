@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TenenciaRequest {
-    private String ticker;
+    private String simboloAccion;
     private Double cantidad;
     private Long portfolioId;
 }

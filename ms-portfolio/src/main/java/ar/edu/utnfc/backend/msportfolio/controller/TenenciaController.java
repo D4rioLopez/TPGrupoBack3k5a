@@ -60,18 +60,18 @@ public class TenenciaController {
 
     @PostMapping("/usuario/{keycloakId}/actualizar-tenencia")
     public TenenciaResponse actualizarTenencia(@PathVariable String keycloakId,
-                                        @RequestParam String ticker,
-                                        @RequestParam Double cantidadDelta) {
-        return toResponse(tenenciaService.actualizarTenencia(keycloakId, ticker, cantidadDelta));
+                                        @RequestParam String simboloAccion,
+                                        @RequestParam Double cantidad) {
+        return toResponse(tenenciaService.actualizarTenencia(keycloakId, simboloAccion, cantidad));
     }
 
     @GetMapping("/usuario/{keycloakId}/validar")
     public Boolean validarTenencia(@PathVariable String keycloakId,
-                                   @RequestParam String ticker,
+                                   @RequestParam String simboloAccion,
                                    @RequestParam Double cantidad) {
         try {
             return tenenciaService.obtenerPorKeycloakId(keycloakId).stream()
-                    .filter(t -> t.getTicker().equalsIgnoreCase(ticker))
+                    .filter(t -> t.getSimboloAccion().equalsIgnoreCase(simboloAccion))
                     .findFirst()
                     .map(t -> t.getCantidad() >= cantidad)
                     .orElse(false);
@@ -84,7 +84,7 @@ public class TenenciaController {
         if (tenencia == null) return null;
         return TenenciaResponse.builder()
                 .id(tenencia.getId())
-                .ticker(tenencia.getTicker())
+                .simboloAccion(tenencia.getSimboloAccion())
                 .cantidad(tenencia.getCantidad())
                 .portfolioId(tenencia.getPortfolio() != null ? tenencia.getPortfolio().getId() : null)
                 .build();
@@ -97,7 +97,7 @@ public class TenenciaController {
             portfolio = portfolioService.obtenerPorId(request.getPortfolioId());
         }
         return Tenencia.builder()
-                .ticker(request.getTicker())
+                .simboloAccion(request.getSimboloAccion())
                 .cantidad(request.getCantidad())
                 .portfolio(portfolio)
                 .build();

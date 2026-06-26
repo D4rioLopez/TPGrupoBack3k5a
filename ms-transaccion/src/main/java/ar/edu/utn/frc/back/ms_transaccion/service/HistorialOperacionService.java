@@ -24,11 +24,11 @@ public class HistorialOperacionService {
 
     //RF5 historial de operaciones
     @Transactional
-    public List<OperacionResponse> listarHistorialDeOperacionesDeUsuario(Long usuarioId) {
+    public List<OperacionResponse> listarHistorialDeOperacionesDeUsuario(String keycloakId) {
         List<OperacionResponse> historial = new ArrayList<>();
 
         //oc
-        ordenDeCompraRepository.findByUsuarioIdOrderByFechaDesc(usuarioId)
+        ordenDeCompraRepository.findByKeycloakIdOrderByFechaDesc(keycloakId)
                 .forEach(oc -> historial.add(OperacionResponse.builder()
                         .id(oc.getId())
                         .tipo("COMPRA")
@@ -40,7 +40,7 @@ public class HistorialOperacionService {
                         .build()));
 
         //OVs
-        ordenDeVentaRepository.findByUsuarioIdOrderByFechaDesc(usuarioId)
+        ordenDeVentaRepository.findByKeycloakIdOrderByFechaDesc(keycloakId)
                 .forEach(ov -> ov.getDetalleOrdenDeVenta()
                         .forEach(detalle -> historial.add(OperacionResponse.builder()
                                 .id(ov.getId())
@@ -53,7 +53,7 @@ public class HistorialOperacionService {
                                 .build())));
 
         // transacciones
-        transaccionRepository.findHistorialByUsuarioId(usuarioId)
+        transaccionRepository.findHistorialBykeycloakId(keycloakId)
                 .forEach(t -> historial.add(OperacionResponse.builder()
                         .id(t.getId())
                         .tipo("TRANSACCION")

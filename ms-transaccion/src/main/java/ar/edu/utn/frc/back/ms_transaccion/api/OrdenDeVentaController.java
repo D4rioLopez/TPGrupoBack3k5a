@@ -1,8 +1,11 @@
 package ar.edu.utn.frc.back.ms_transaccion.api;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import ar.edu.utn.frc.back.ms_transaccion.model.DetalleOrdenDeVenta;
@@ -18,13 +21,16 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @RequestMapping("/api/ordenes-de-venta")
 public class OrdenDeVentaController {
+    @Autowired
     private OrdenDeVentaService ordenDeVentaService;
 
     //RF4 registrar ov
     @PostMapping
-    public ResponseEntity<OrdenDeVentaResponse> crearOrdenDeVenta(@RequestBody OrdenDeVentaRequest request) {
+    public ResponseEntity<OrdenDeVentaResponse> crearOrdenDeVenta(
+            @RequestBody OrdenDeVentaRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
         OrdenDeVenta ordenDeVenta = new OrdenDeVenta();
-        ordenDeVenta.setUsuarioId(request.getUsuarioId());
+        ordenDeVenta.setKeycloakId(jwt.getSubject());
         ordenDeVenta.setDetalleOrdenDeVenta(
                 request.getDetalles().stream()
                         .map(d -> {
@@ -45,7 +51,7 @@ public class OrdenDeVentaController {
         private OrdenDeVentaResponse mapToResponse(OrdenDeVenta ov) {
             return OrdenDeVentaResponse.builder()
                     .id(ov.getId())
-                    .usuarioId(ov.getUsuarioId())
+                    .keycloakId(ov.getKeycloakId())
                     .estado(ov.getEstado().name())
                     .fecha(ov.getFecha())
                     .detalles(ov.getDetalleOrdenDeVenta().stream()

@@ -10,5 +10,5 @@ public interface TenenciaRepository extends JpaRepository<Tenencia, Long>{
 
     List<Tenencia> findByPortfolioKeycloakId(String keycloakId);
 
-    Optional<Tenencia> findByPortfolioKeycloakIdAndTicker(String keycloakId, String ticker);
+    Optional<Tenencia> findByPortfolioKeycloakIdAndSimboloAccion(String keycloakId, String simboloAccion);
 }

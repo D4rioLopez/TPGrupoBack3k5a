@@ -1,5 +1,6 @@
 package ar.edu.utn.frc.back.ms_transaccion.service;
 
+import ar.edu.utn.frc.back.ms_transaccion.client.PortfolioClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,14 +26,27 @@ public class OrdenDeCompraService {
     @Autowired
     private OrdenDeVentaRepository ordenDeVentaRepository;
 
+    @Autowired
+    private PortfolioClient portfolioClient;
+
     @Transactional
     public OrdenDeCompra procesarOrdenDeCompra(OrdenDeCompra ordenDeCompra) {
+        //valido el saldo de portfolio
+        Boolean tieneSaldo = portfolioClient.validarSaldo(
+                ordenDeCompra.getKeycloakId(),
+                ordenDeCompra.getPrecioMaximo() * ordenDeCompra.getCantidad()
+        );
+        if (Boolean.FALSE.equals(tieneSaldo)) {
+            ordenDeCompra.setEstado(EstadoOrdenCompra.RECHAZADA);
+            return ordenDeCompraRepository.save(ordenDeCompra);
+        }
         //busco matcheo de oc con dov
         List<DetalleOrdenDeVenta> detalles = detalleOrdenDeVentaRepository.findDetallesOCCompatibles(
                 ordenDeCompra.getSimboloAccion(),
                 ordenDeCompra.getCantidad(),
                 ordenDeCompra.getPrecioMaximo()
-        );
+        ).stream() //valido que el comprador no sea el mismo que el vendedor
+                .filter(d -> !d.getOrdenDeVenta().getKeycloakId().equals(ordenDeCompra.getKeycloakId())).toList();
 
         //rechazo oc
         if (detalles.isEmpty()) {
@@ -67,6 +81,18 @@ public class OrdenDeCompraService {
             ov.setEstado(EstadoOrdenVenta.PARCIAL);
         }
         ordenDeVentaRepository.save(ov);
+
+        //actualizo el portfolio
+        double total = detalle.getPrecioUnitario() * ordenDeCompra.getCantidad();
+        String keycloakComprador = ordenDeCompra.getKeycloakId();
+        String keycloakVendedor = ov.getKeycloakId();
+        String simbolo = ordenDeCompra.getSimboloAccion();
+        double cantidad = ordenDeCompra.getCantidad();
+
+        portfolioClient.actualizarSaldo(keycloakComprador, -total);
+        portfolioClient.actualizarTenencia(keycloakComprador, simbolo, cantidad);
+        portfolioClient.actualizarSaldo(keycloakVendedor, total);
+        portfolioClient.actualizarTenencia(keycloakVendedor, simbolo, -cantidad);
 
         return oc;
     }

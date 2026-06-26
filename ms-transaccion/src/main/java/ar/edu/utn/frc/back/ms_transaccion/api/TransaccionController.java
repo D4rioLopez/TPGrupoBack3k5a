@@ -20,9 +20,9 @@ public class TransaccionController {
     @Autowired
     private TransaccionService transaccionService;
 
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<TransaccionResponse>> listarPorUsuario(@PathVariable Long usuarioId) {
-        List<TransaccionResponse> historial = transaccionService.listarPorUsuarioId(usuarioId)
+    @GetMapping("/usuario/{keycloakId}")
+    public ResponseEntity<List<TransaccionResponse>> listarPorkeycloakId(@PathVariable String keycloakId) {
+        List<TransaccionResponse> historial = transaccionService.listarPorkeycloakId(keycloakId)
                 .stream()
                 .map(this::mapToResponse)
                 .collect(Collectors.toList());
@@ -41,8 +41,8 @@ public class TransaccionController {
     private TransaccionResponse mapToResponse(Transaccion t) {
         return TransaccionResponse.builder()
                 .id(t.getId())
-                .compradorId(t.getOrdenDeCompra().getUsuarioId())
-                .vendedorId(t.getDetalleOrdenDeVenta().getOrdenDeVenta().getUsuarioId())
+                .compradorId(t.getOrdenDeCompra().getKeycloakId())
+                .vendedorId(t.getDetalleOrdenDeVenta().getOrdenDeVenta().getKeycloakId())
                 .cantidad(t.getCantidad())
                 .precio(t.getPrecio())
                 .fecha(t.getFecha())

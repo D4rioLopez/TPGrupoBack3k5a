@@ -16,7 +16,7 @@ public class TransaccionService {
         return transaccionRepository.findByOrderByFechaDesc();
     }
 
-    public List<Transaccion> listarPorUsuarioId(Long usuarioId) {
-        return transaccionRepository.findHistorialByUsuarioId(usuarioId);
+    public List<Transaccion> listarPorkeycloakId(String keycloakId) {
+        return transaccionRepository.findHistorialBykeycloakId(keycloakId);
     }
 }

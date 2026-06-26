@@ -39,7 +39,7 @@ public class TenenciaService {
     public Tenencia actualizar(Long id, Tenencia tenenciaActualizada) {
 
         Tenencia tenencia = obtenerPorId(id);
-        tenencia.setTicker(tenenciaActualizada.getTicker());
+        tenencia.setSimboloAccion(tenenciaActualizada.getSimboloAccion());
         tenencia.setCantidad(tenenciaActualizada.getCantidad());
         tenencia.setPortfolio(tenenciaActualizada.getPortfolio());
 
@@ -53,18 +53,18 @@ public class TenenciaService {
         tenenciaRepository.delete(tenencia);
     }
 
-    public Tenencia actualizarTenencia(String keycloakId, String ticker, Double cantidadDelta) {
+    public Tenencia actualizarTenencia(String keycloakId, String simboloAccion, Double cantidadDelta) {
         if (cantidadDelta == null) {
             throw new IllegalArgumentException("La cantidad delta no puede ser nula");
         }
 
-        Optional<Tenencia> tenenciaOpt = tenenciaRepository.findByPortfolioKeycloakIdAndTicker(keycloakId, ticker);
+        Optional<Tenencia> tenenciaOpt = tenenciaRepository.findByPortfolioKeycloakIdAndSimboloAccion(keycloakId, simboloAccion);
 
         if (tenenciaOpt.isPresent()) {
             Tenencia tenencia = tenenciaOpt.get();
             double nuevaCantidad = tenencia.getCantidad() + cantidadDelta;
             if (nuevaCantidad < 0) {
-                throw new RuntimeException("Cantidad insuficiente de la acción " + ticker + " para realizar la venta");
+                throw new RuntimeException("Cantidad insuficiente de la acción " + simboloAccion + " para realizar la venta");
             } else if (nuevaCantidad == 0) {
                 tenenciaRepository.delete(tenencia);
                 return null;
@@ -74,13 +74,13 @@ public class TenenciaService {
             }
         } else {
             if (cantidadDelta < 0) {
-                throw new RuntimeException("No posee tenencias de la acción " + ticker + " para vender");
+                throw new RuntimeException("No posee tenencias de la acción " + simboloAccion + " para vender");
             }
             Portfolio portfolio = portfolioRepository.findByKeycloakId(keycloakId)
                     .orElseThrow(() -> new RuntimeException("Portfolio no encontrado para el usuario: " + keycloakId));
 
             Tenencia nuevaTenencia = Tenencia.builder()
-                    .ticker(ticker)
+                    .simboloAccion(simboloAccion)
                     .cantidad(cantidadDelta)
                     .portfolio(portfolio)
                     .build();

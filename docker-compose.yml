@@ -82,6 +82,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-app:5432/admin
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8080/realms/tpi-backend
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/tpi-backend/protocol/openid-connect/certs
+      PORTFOLIO_SERVICE_URL: http://ms-portfolio:8082
     ports:
       - "8081:8081"
     depends_on:
@@ -99,6 +102,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-app:5432/admin
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin123
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://localhost:8080/realms/tpi-backend
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://keycloak:8080/realms/tpi-backend/protocol/openid-connect/certs
+      COTIZACION_SERVICE_URL: http://ms-cotizacion:8083
     ports:
       - "8082:8082"
     depends_on:

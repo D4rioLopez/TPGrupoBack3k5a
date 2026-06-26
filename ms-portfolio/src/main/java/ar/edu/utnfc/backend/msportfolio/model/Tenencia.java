@@ -18,7 +18,7 @@ public class Tenencia {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private  String ticker;
+    private String simboloAccion;
     private Double cantidad;
 
     @ManyToOne

@@ -18,7 +18,7 @@ public class OrdenDeCompra {
     private Long id;
 
     private LocalDateTime fecha;
-    private Long usuarioId;
+    private String keycloakId;
     private Double precioMaximo;
     private String simboloAccion;
     private Long cantidad;

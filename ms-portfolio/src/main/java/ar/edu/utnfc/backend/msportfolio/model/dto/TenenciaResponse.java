@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TenenciaResponse {
     private Long id;
-    private String ticker;
+    private String simboloAccion;
     private Double cantidad;
     private Long portfolioId;
 }

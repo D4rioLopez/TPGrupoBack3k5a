@@ -21,7 +21,7 @@ public class OrdenDeVenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long usuarioId;
+    private String keycloakId;
     private LocalDateTime fecha;
 
     @OneToMany(mappedBy = "ordenDeVenta", cascade = CascadeType.ALL)

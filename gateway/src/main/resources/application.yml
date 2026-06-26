@@ -10,7 +10,7 @@ spring:
         - id: ms-transaccion
           uri: http://ms-transaccion:8081
           predicates:
-            - Path=/api/ordenes-de-compra/**, /api/ordenes-de-venta/**, /api/transacciones/**
+            - Path=/api/ordenes-de-compra/**, /api/ordenes-de-venta/**, /api/transacciones/**, /api/historial-operaciones/**
         - id: ms-portfolio
           uri: http://ms-portfolio:8082
           predicates:

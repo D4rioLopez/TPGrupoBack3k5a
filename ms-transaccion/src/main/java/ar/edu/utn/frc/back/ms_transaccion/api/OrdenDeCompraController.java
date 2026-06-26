@@ -3,6 +3,8 @@ package ar.edu.utn.frc.back.ms_transaccion.api;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import ar.edu.utn.frc.back.ms_transaccion.model.OrdenDeCompra;
@@ -22,8 +24,11 @@ public class OrdenDeCompraController {
 
     //RF3 registrar oc
     @PostMapping
-    public ResponseEntity<OrdenDeCompraResponse> crearOrdenDeCompra(@RequestBody OrdenDeCompraRequest request) {
+    public ResponseEntity<OrdenDeCompraResponse> crearOrdenDeCompra(
+            @RequestBody OrdenDeCompraRequest request,
+            @AuthenticationPrincipal Jwt jwt) {
         OrdenDeCompra ordenDeCompra = new OrdenDeCompra();
+        ordenDeCompra.setKeycloakId(jwt.getSubject());
         ordenDeCompra.setSimboloAccion(request.getSimboloAccion());
         ordenDeCompra.setCantidad(request.getCantidad());
         ordenDeCompra.setPrecioMaximo(request.getPrecioMaximo());
