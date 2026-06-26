@@ -42,4 +42,16 @@ public class OrdenDeVentaService {
 
         return ordenDeVentaRepository.save(ordenDeVenta);
     }
+
+    public List<OrdenDeVenta> listarOrdenesDeVenta(String keycloakId, EstadoOrdenVenta estado) {
+        if (keycloakId != null && estado != null) {
+            return ordenDeVentaRepository.findByKeycloakIdAndEstado(keycloakId, estado);
+        } else if (keycloakId != null) {
+            return ordenDeVentaRepository.findByKeycloakIdOrderByFechaDesc(keycloakId);
+        } else if (estado != null) {
+            return ordenDeVentaRepository.findByEstado(estado);
+        } else {
+            return ordenDeVentaRepository.findAll();
+        }
+    }
 }

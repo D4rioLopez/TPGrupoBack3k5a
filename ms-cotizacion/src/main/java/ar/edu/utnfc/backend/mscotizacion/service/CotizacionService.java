@@ -18,7 +18,7 @@ public class CotizacionService {
     private static final String YAHOO_FINANCE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/";
     private static final String EXCHANGE_RATE_URL = "https://open.er-api.com/v6/latest/USD";
 
-    // Valores de respaldo (Fallback Offline) por si falla la conexión a internet
+    // Valores de respaldo por si falla la conexión a internet
     private static final double DEFAULT_ARS_RATE = 1400.0;
     private static final Map<String, Double> MOCK_PRICES_USD = new HashMap<>();
 

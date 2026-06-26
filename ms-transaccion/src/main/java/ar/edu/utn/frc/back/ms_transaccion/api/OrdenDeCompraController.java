@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import ar.edu.utn.frc.back.ms_transaccion.model.EstadoOrdenCompra;
 import ar.edu.utn.frc.back.ms_transaccion.model.OrdenDeCompra;
 import ar.edu.utn.frc.back.ms_transaccion.model.dto.OrdenDeCompraRequest;
 import ar.edu.utn.frc.back.ms_transaccion.model.dto.OrdenDeCompraResponse;
@@ -14,6 +15,8 @@ import ar.edu.utn.frc.back.ms_transaccion.service.OrdenDeCompraService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -21,6 +24,31 @@ import java.util.List;
 public class OrdenDeCompraController {
     @Autowired
     private OrdenDeCompraService ordenDeCompraService;
+
+    @GetMapping
+    public ResponseEntity<List<OrdenDeCompraResponse>> obtenerOrdenesDeCompra(
+            @RequestParam(required = false) EstadoOrdenCompra estado,
+            @AuthenticationPrincipal Jwt jwt) {
+        
+        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+        boolean isAdmin = false;
+        if (realmAccess != null && realmAccess.containsKey("roles")) {
+            List<String> roles = (List<String>) realmAccess.get("roles");
+            isAdmin = roles.contains("admin");
+        }
+
+        List<OrdenDeCompra> ordenes;
+        if (isAdmin) {
+            ordenes = ordenDeCompraService.listarOrdenesDeCompra(null, estado);
+        } else {
+            ordenes = ordenDeCompraService.listarOrdenesDeCompra(jwt.getSubject(), estado);
+        }
+
+        List<OrdenDeCompraResponse> response = ordenes.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
 
     //RF3 registrar oc
     @PostMapping

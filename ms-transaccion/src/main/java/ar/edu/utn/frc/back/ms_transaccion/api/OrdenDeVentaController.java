@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import ar.edu.utn.frc.back.ms_transaccion.model.EstadoOrdenVenta;
 import ar.edu.utn.frc.back.ms_transaccion.model.DetalleOrdenDeVenta;
 import ar.edu.utn.frc.back.ms_transaccion.model.OrdenDeVenta;
 import ar.edu.utn.frc.back.ms_transaccion.model.dto.DetalleOrdenDeVentaResponse;
@@ -15,6 +16,8 @@ import ar.edu.utn.frc.back.ms_transaccion.model.dto.OrdenDeVentaRequest;
 import ar.edu.utn.frc.back.ms_transaccion.model.dto.OrdenDeVentaResponse;
 import ar.edu.utn.frc.back.ms_transaccion.service.OrdenDeVentaService;
 
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,6 +26,31 @@ import java.util.stream.Collectors;
 public class OrdenDeVentaController {
     @Autowired
     private OrdenDeVentaService ordenDeVentaService;
+
+    @GetMapping
+    public ResponseEntity<List<OrdenDeVentaResponse>> obtenerOrdenesDeVenta(
+            @RequestParam(required = false) EstadoOrdenVenta estado,
+            @AuthenticationPrincipal Jwt jwt) {
+        
+        Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+        boolean isAdmin = false;
+        if (realmAccess != null && realmAccess.containsKey("roles")) {
+            List<String> roles = (List<String>) realmAccess.get("roles");
+            isAdmin = roles.contains("admin");
+        }
+
+        List<OrdenDeVenta> ordenes;
+        if (isAdmin) {
+            ordenes = ordenDeVentaService.listarOrdenesDeVenta(null, estado);
+        } else {
+            ordenes = ordenDeVentaService.listarOrdenesDeVenta(jwt.getSubject(), estado);
+        }
+
+        List<OrdenDeVentaResponse> response = ordenes.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
+    }
 
     //RF4 registrar ov
     @PostMapping

@@ -19,7 +19,7 @@ public class PortfolioClient {
 
     public Boolean validarSaldo(String keycloakId, Double monto) {
         String url = UriComponentsBuilder
-                .fromUriString(portfolioUrl + "/portfolios/usuario/{id}/validar-saldo")
+                .fromUriString(portfolioUrl + "/api/portfolios/usuario/{id}/validar-saldo")
                 .queryParam("monto", monto)
                 .buildAndExpand(keycloakId).toUriString();
         return restTemplate.getForObject(url, Boolean.class);
@@ -27,7 +27,7 @@ public class PortfolioClient {
 
     public Boolean validarTenencia(String keycloakId, String simboloAccion, Long cantidad) {
         String url = UriComponentsBuilder
-                .fromUriString(portfolioUrl + "/tenencias/usuario/{id}/validar")
+                .fromUriString(portfolioUrl + "/api/tenencias/usuario/{id}/validar")
                 .queryParam("simboloAccion", simboloAccion)
                 .queryParam("cantidad", cantidad)
                 .buildAndExpand(keycloakId).toUriString();
@@ -36,7 +36,7 @@ public class PortfolioClient {
 
     public void actualizarSaldo(String keycloakId, Double monto) {
         String url = UriComponentsBuilder
-                .fromUriString(portfolioUrl + "/portfolios/usuario/{id}/actualizar-saldo")
+                .fromUriString(portfolioUrl + "/api/portfolios/usuario/{id}/actualizar-saldo")
                 .queryParam("monto", monto)
                 .buildAndExpand(keycloakId).toUriString();
         restTemplate.put(url, null);
@@ -44,7 +44,7 @@ public class PortfolioClient {
 
     public void actualizarTenencia(String keycloakId, String simboloAccion, Double cantidad) {
         String url = UriComponentsBuilder
-                .fromUriString(portfolioUrl + "/tenencias/usuario/{id}/actualizar-tenencia")
+                .fromUriString(portfolioUrl + "/api/tenencias/usuario/{id}/actualizar-tenencia")
                 .queryParam("simboloAccion", simboloAccion)
                 .queryParam("cantidad", cantidad)
                 .buildAndExpand(keycloakId).toUriString();
